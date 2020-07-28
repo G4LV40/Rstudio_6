@@ -1,0 +1,86 @@
+##### Regress�es ####-----------------------------------------------------------
+
+#usaremso o pacote de estat�stica experimental 
+library(ExpDes.pt)
+
+dados<-(read.table("dados_aula_6.csv", h=TRUE))
+attach(dados)
+ls(dados)
+
+# verificando a quantidade de ocorr�ncia de cada tratamento
+table(ADUBO_NITROGENADO)
+
+#Repeti��o como um fator, ou seja n�o � medida regressiva
+rep<-as.factor(REP)
+
+reg <- dbc(ADUBO_NITROGENADO,REP, BRIX,quali = FALSE)
+
+#Isolamos os coeficientes dos polin�mios
+a<-reg$reg$'Coeficientes parabola'
+
+b0=a[1]
+b1=a[2]
+b2=a[3]
+
+# cria-se uma "r�gua" que ser� a medida para a vari�vel em estudo
+#que no caso vai at� 35
+x<-seq(0,35,1)
+
+# No comando plot vamos elencar na seguiinte ordem; os par�metros regressores
+# ou seja beta0, beta1, beta2...e coeficiente linear e "reta" ajustada
+
+plot(b0+b1*x+b2*x^2,type = "l",ylab="",xlab = "",
+     ylim=c(min(BRIX),max(BRIX)),xlim = c(min(ADUBO_NITROGENADO),
+                                          max(ADUBO_NITROGENADO)))
+
+# o comando par informa a maneira de exibi��o dos plots, netse caso, um grafio
+# ira sobrepor o anterior, e assim sucessivamente
+par(new=TRUE)
+
+#Grafico de pontos, valores observados
+plot(ADUBO_NITROGENADO,BRIX)
+
+#Pode-se usar a biblioteca graficos dentro de pacote para produzir
+# automaticamente informando o grau do polinomio desejado
+graficos(reg,grau="2",mod=TRUE,main="N aplicado em doses crescentes",
+         sub="intera��o de vari�veis",
+         xlab="n�veis de N", ylab="Resposta em BRIX", pch=19,bty="o")
+
+
+# Mudando para maiores polin�mios-----------------------------------------------
+# use CTRL + L para limpar seu console e clique em limpar ambiente
+
+dados<-(read.table("dados_aula_6_1.csv", h=TRUE))
+attach(dados)
+ls(dados)
+
+#Repeti��o como um fator, ou seja n�o � medida regressiva
+rep<-as.factor(REP)
+
+reg <- dbc(EPOCAS,rep, MATERIA_SECA,quali = FALSE)
+
+#Isolamos os coeficientes dos polin�mios
+a<-reg$reg$'Coeficientes cubica'
+
+b0=a[1]
+b1=a[2]
+b2=a[3]
+b3=a[4]
+x<-seq(0,21,1)
+plot(b0+b1*x+b2*x^2+b3*x^3,type = "l",ylab="",xlab = "",
+     ylim=c(min(MATERIA_SECA),max(MATERIA_SECA)),xlim = c(min(EPOCAS),
+                                          max(EPOCAS)))
+par(new=TRUE)
+plot(EPOCAS,MATERIA_SECA)
+
+
+graficos(reg,grau=1,mod=TRUE,main="Grafico linear",sub="intera��o de vari�veis",
+         xlab="niveis de X", ylab="resposta de (Y)", pch=19,bty="o")
+
+graficos(reg,grau=2,mod=TRUE,main="Gr?fico exerc�cio 2",sub="intera��o de vari�eis",
+         xlab="niveis de X", ylab="resposta de (Y)", pch=19,bty="o")
+
+graficos(reg,grau=3,mod=TRUE,main="Gr�fico cubico",sub="intera��o de vari�veis",
+         xlab="niveis de X", ylab="resposta de (Y)", pch=19,bty="o")
+
+
